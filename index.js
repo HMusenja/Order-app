@@ -1,8 +1,5 @@
 import inquirer from 'inquirer';
-
-
-
-
+import chalk from 'chalk';  // Import chalk for colorized output
 
 // Sample menu with food, drinks, and desserts, along with prices in euros
 var menu = {
@@ -40,7 +37,7 @@ function takeOrderForTable() {
     inquirer.prompt({
         type: 'number',
         name: 'guests',
-        message: 'How many guests are at the table?',
+        message: chalk.green('How many guests are at the table?'),
     }).then(function(guestAnswer) {
         var guests = guestAnswer.guests;
 
@@ -48,7 +45,7 @@ function takeOrderForTable() {
         inquirer.prompt({
             type: 'confirm',
             name: 'together',
-            message: 'Are you ordering together?',
+            message: chalk.green('Are you ordering together?'),
         }).then(function(orderAnswer) {
             var together = orderAnswer.together;
 
@@ -70,7 +67,7 @@ function takeOrderForTable() {
 
                 function processGuestOrder() {
                     if (totalGuests < guests) {
-                        console.log(`Taking order for guest ${totalGuests + 1}`);
+                        console.log(chalk.blue(`Taking order for guest ${totalGuests + 1}`));
                         processOrder(function(order, price) {
                             individualOrders.push(order);
                             individualPrices.push(price);
@@ -79,9 +76,9 @@ function takeOrderForTable() {
                         });
                     } else {
                         for (var j = 0; j < guests; j++) {
-                            console.log(`Guest ${j + 1}'s order:`, individualOrders[j]);
-                            console.log(`Guest ${j + 1}'s total price: €${individualPrices[j].toFixed(2)}`);
-                            console.log('-----------------------------------');
+                            console.log(chalk.yellow.bold(`Guest ${j + 1}'s order:`), individualOrders[j]);
+                            console.log(chalk.cyan(`Guest ${j + 1}'s total price: €${individualPrices[j].toFixed(2)}`));
+                            console.log(chalk.magenta('-----------------------------------'));
                         }
                         askForAnotherTable();
                     }
@@ -101,7 +98,7 @@ function processOrder(callback) {
     inquirer.prompt({
         type: 'list',
         name: 'foodChoice',
-        message: 'What would you like to eat?',
+        message: chalk.green('What would you like to eat?'),
         choices: menu.food.map(function(item) {
             return `${item.name} (€${item.price})`;
         }),
@@ -116,7 +113,7 @@ function processOrder(callback) {
         inquirer.prompt({
             type: 'list',
             name: 'drinksChoice',
-            message: 'What would you like to drink?',
+            message: chalk.green('What would you like to drink?'),
             choices: menu.drinks.map(function(item) {
                 return `${item.name} (€${item.price})`;
             }),
@@ -131,13 +128,13 @@ function processOrder(callback) {
             inquirer.prompt({
                 type: 'confirm',
                 name: 'dessertRequest',
-                message: 'Would you like to order dessert?',
+                message: chalk.green('Would you like to order dessert?'),
             }).then(function(dessertAnswer) {
                 if (dessertAnswer.dessertRequest) {
                     inquirer.prompt({
                         type: 'list',
                         name: 'dessertChoice',
-                        message: 'What dessert would you like?',
+                        message: chalk.green('What dessert would you like?'),
                         choices: menu.desserts.map(function(item) {
                             return `${item.name} (€${item.price})`;
                         }),
@@ -159,8 +156,8 @@ function processOrder(callback) {
 }
 
 function displayOrderAndPrice(tableOrder, totalPrice) {
-    console.log(`Table's order:`, tableOrder);
-    console.log(`Total price for the table: €${totalPrice.toFixed(2)}`);
+    console.log(chalk.yellow.bold(`Table's order:`), tableOrder);
+    console.log(chalk.cyan.bold(`Total price for the table: €${totalPrice.toFixed(2)}`));
 }
 
 // Function to ask if there's another table to process
@@ -168,17 +165,18 @@ function askForAnotherTable() {
     inquirer.prompt({
         type: 'confirm',
         name: 'anotherTable',
-        message: 'Is there another table to take an order for?',
+        message: chalk.green('Is there another table to take an order for?'),
     }).then(function(answer) {
         if (answer.anotherTable) {
             takeOrderForTable(); // Take orders for the next table
         } else {
-            console.log('All orders completed. Thank you!');
-            console.log('All orders:', orders);
+            console.log(chalk.blue.bold('All orders completed. Thank you!'));
+            console.log(chalk.magenta('All orders:'), orders);
         }
     });
 }
 
 // Start taking orders
 takeOrderForTable();
+
 
